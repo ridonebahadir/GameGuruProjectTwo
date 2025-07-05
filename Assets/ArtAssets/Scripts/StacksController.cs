@@ -1,35 +1,59 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class StacksController : MonoBehaviour
 {
-    [SerializeField] private Stack stackObj;
-    [SerializeField] private Stack startStack;
+    public Stack stack;
+    public Transform cameraTransform;
+
     private Stack _currentStack;
+    private Stack _lastStack;
+
+    private float stackZ = 0f;
+    private float stackLenght = 2.1f;
 
     private void Start()
     {
-        _currentStack = startStack;
-        _currentStack.IsMoving = false;
+        SpawnStack();
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            SpawnStack();
+            PlaceBlock();
         }
     }
 
-
     private void SpawnStack()
     {
-        var nextPos = _currentStack.transform.position + Vector3.forward * _currentStack.GetBoundZ();
-        _currentStack = Instantiate(stackObj, nextPos, Quaternion.identity, transform);
-        _currentStack.Init(_currentStack);
-        
+        stackZ += stackLenght;
 
+        var spawnPos = new Vector3(-2f, 0f, stackZ);
+        var obj = Instantiate(stack, spawnPos, Quaternion.identity);
+        _currentStack = obj;
+        _currentStack.Initialize(Vector3.right);
+
+        if (_lastStack == null) return;
+        var lastScale = _lastStack.transform.localScale;
+        obj.transform.localScale = new Vector3(lastScale.x, 1f, lastScale.z);
+    }
+
+    private void PlaceBlock()
+    {
+        _currentStack.IsMoving=false;
+
+        if (_lastStack != null)
+        {
+            bool alive = _currentStack.Cut(_lastStack);
+            if (!alive)
+            {
+                Debug.Log("GAME OVER");
+                return;
+            }
+        }
+
+        _lastStack = _currentStack;
+        SpawnStack();
     }
 }
