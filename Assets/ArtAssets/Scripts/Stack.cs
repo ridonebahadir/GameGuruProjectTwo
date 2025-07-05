@@ -4,6 +4,8 @@ public class Stack : MonoBehaviour
 {
     public float moveSpeed = 2f;
     public Vector3 moveDirection = Vector3.right;
+    
+    public MeshRenderer meshRenderer;
     public bool IsMoving { get; set; }
 
     public void Initialize(Vector3 direction)
@@ -20,11 +22,22 @@ public class Stack : MonoBehaviour
 
     public bool Cut(Stack previousStack)
     {
+        // Renderer ile görsel çakışma kontrolü
+        var prevRenderer = previousStack.GetComponent<Renderer>();
+
+        if (!meshRenderer.bounds.Intersects(prevRenderer.bounds))
+        {
+            return false; // Hiç çakışma yoksa GAME OVER
+        }
+
+        // Çakışma varsa kesme işlemi yap
         var deltaX = transform.position.x - previousStack.transform.position.x;
         var direction = deltaX > 0 ? 1f : -1f;
 
         var overlap = previousStack.transform.localScale.x - Mathf.Abs(deltaX);
-        var tolerance = 0.1f; 
+
+        // Tam hizalanmışsa, kusursuz yerleşim
+        var tolerance = 0.05f;
         if (Mathf.Abs(deltaX) <= tolerance)
         {
             transform.position = new Vector3(previousStack.transform.position.x, transform.position.y, transform.position.z);
@@ -37,8 +50,9 @@ public class Stack : MonoBehaviour
             return false;
         }
 
-        var newX = previousStack.transform.position.x + (direction * overlap / 2f);
-        transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+// Yeni pozisyon ve scale — tam ortalanmış şekilde
+        float centerX = (transform.position.x + previousStack.transform.position.x) / 2f;
+        transform.position = new Vector3(centerX, transform.position.y, transform.position.z);
         transform.localScale = new Vector3(overlap, 1f, previousStack.transform.localScale.z);
 
         var cutSize = Mathf.Abs(deltaX);
@@ -47,9 +61,10 @@ public class Stack : MonoBehaviour
         var cutScale = new Vector3(cutSize, 1f, previousStack.transform.localScale.z);
 
         SpawnFallingPart(cutPos, cutScale);
-
         return true;
     }
+
+
 
 
 

@@ -131,6 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   moveDirection: {x: 1, y: 0, z: 0}
+  meshRenderer: {fileID: 2464310067931993605}
 --- !u!65 &8148691289732291681
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -3460,7 +3460,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -3471,7 +3471,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604125041}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad9a6a85e8924c84785c56f03d735d50, type: 3}
   m_Name: 
@@ -5681,7 +5681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cb29436e7beb8e4f89d7e0a9919a60e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stack: {fileID: 2464310068259064316, guid: 00d310549939ad947bc6bd25e2875604, type: 3}
+  stack: {fileID: 5959419890750026964, guid: f8cb813cd861c2045b7a6e7c81d64d83, type: 3}
   cameraTransform: {fileID: 889751901}
   character: {fileID: 604125044}
 --- !u!1 &1025820932
