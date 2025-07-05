@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class Stack : MonoBehaviour
 {
@@ -10,6 +11,14 @@ public class Stack : MonoBehaviour
     private Vector3 _moveDirection = Vector3.right;
 
     public bool IsMoving { get; set; }
+
+
+    private PoolManager _poolManager;
+    [Inject]
+    private void Construct(PoolManager poolManager)
+    {
+        _poolManager = poolManager;
+    }
 
     public void Initialize(Vector3 direction, Material material)
     {
@@ -37,7 +46,7 @@ public class Stack : MonoBehaviour
 
         var overlap = previousStack.transform.localScale.x - Mathf.Abs(deltaX);
 
-        var tolerance = 0.1f;
+        var tolerance = 0.3f;
         if (Mathf.Abs(deltaX) <= tolerance)
         {
             transform.position = new Vector3(previousStack.transform.position.x, transform.position.y,
@@ -45,8 +54,8 @@ public class Stack : MonoBehaviour
             transform.localScale = new Vector3(previousStack.transform.localScale.x, 1f,
                 previousStack.transform.localScale.z);
 
-            Debug.Log("PERFECT!");
-
+            var particle = _poolManager.PerfectParticle.PullGameObject();
+            particle.transform.position = transform.position+Vector3.up*1.5f;
             return true;
         }
 

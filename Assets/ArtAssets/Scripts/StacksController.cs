@@ -27,10 +27,13 @@ public class StacksController : MonoBehaviour
     public Action OnLoseGame;
     public Action OnWinGame;
 
+    private DiContainer _diContainer;
+
     [Inject]
-    private void Construct(CharacterController characterController)
+    private void Construct(CharacterController characterController,DiContainer diContainer)
     {
         _characterController = characterController;
+        _diContainer = diContainer;
     }
 
     private void Start()
@@ -71,6 +74,7 @@ public class StacksController : MonoBehaviour
         var spawnPos = new Vector3(startX, 0f, _stackZ);
 
         var obj = Instantiate(stackPrefab, spawnPos, Quaternion.identity, transform);
+        _diContainer.Inject(obj);
         _currentStack = obj;
         _currentStack.Initialize(direction, materials[Random.Range(0, materials.Length)]);
 
