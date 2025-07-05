@@ -25,6 +25,11 @@ public class CharacterController : MonoBehaviour
 
     public void Fall()
     {
-        transform.DOMoveY(transform.position.y - 5f, 1f).SetEase(Ease.InQuad);
+        var target =transform.position + new Vector3(0,-10,5);
+        transform.DOJump(target, 10, 0,2).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            gameObject.SetActive(false);
+        });
+        
     }
 }
