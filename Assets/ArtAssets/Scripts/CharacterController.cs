@@ -6,8 +6,8 @@ public class CharacterController: MonoBehaviour
     public float stoppingDistance = 0.05f;
 
     private Vector3 _targetPosition;
-    private bool _isMoving = false;
-    private bool _isFalling = false;
+    private bool _isMoving;
+    private bool _isFalling;
 
     private Rigidbody _rigidbody;
 

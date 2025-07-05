@@ -10,7 +10,7 @@ public class StacksController : MonoBehaviour
     private Stack _lastStack;
 
     private float stackZ = 0f;
-    private float stackLenght = 2.1f;
+    private float stackLenght = 2.63f;
 
     private void Start()
     {
@@ -53,8 +53,7 @@ public class StacksController : MonoBehaviour
                 return;
             }
         }
-
-        // Karakteri yeni bloğun ortasına gönder
+        
         character.MoveTo(new Vector3(_currentStack.transform.position.x, character.transform.position.y, _currentStack.transform.position.z));
 
         _lastStack = _currentStack;
