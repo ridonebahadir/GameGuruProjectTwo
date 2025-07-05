@@ -6,7 +6,9 @@ public class Stack : MonoBehaviour
 {
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private FallPart fallPart;
-
+    [SerializeField] private AudioClip clip;
+    
+    
     private readonly float moveSpeed = 2f;
     private Vector3 _moveDirection = Vector3.right;
 
@@ -14,10 +16,13 @@ public class Stack : MonoBehaviour
 
 
     private PoolManager _poolManager;
+    private GameManager _gameManager;
+
     [Inject]
-    private void Construct(PoolManager poolManager)
+    private void Construct(PoolManager poolManager,GameManager gameManager)
     {
         _poolManager = poolManager;
+        _gameManager = gameManager;
     }
 
     public void Initialize(Vector3 direction, Material material)
@@ -53,9 +58,7 @@ public class Stack : MonoBehaviour
                 transform.position.z);
             transform.localScale = new Vector3(previousStack.transform.localScale.x, 1f,
                 previousStack.transform.localScale.z);
-
-            var particle = _poolManager.PerfectParticle.PullGameObject();
-            particle.transform.position = transform.position+Vector3.up*1.5f;
+            PerfectFeedBack();
             return true;
         }
 
@@ -63,7 +66,9 @@ public class Stack : MonoBehaviour
         {
             return false;
         }
-
+        
+        _gameManager.PlaySound(clip);
+        
         float centerX = (transform.position.x + previousStack.transform.position.x) / 2f;
         transform.position = new Vector3(centerX, transform.position.y, transform.position.z);
         transform.localScale = new Vector3(overlap, 1f, previousStack.transform.localScale.z);
@@ -76,6 +81,13 @@ public class Stack : MonoBehaviour
 
         SpawnFallingPart(cutPos, cutScale);
         return true;
+    }
+
+    private void PerfectFeedBack()
+    {
+        var particle = _poolManager.PerfectParticle.PullGameObject();
+        particle.transform.position = transform.position + Vector3.up * 1.5f;
+        _gameManager.PlaySound(clip,true);
     }
 
     private void SpawnFallingPart(Vector3 pos, Vector3 scale)

@@ -99,6 +99,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshRenderer: {fileID: 8391681755769778179}
   fallPart: {fileID: 7611576762475556123, guid: 7c668f90caf7f0c4e96030902fd38674, type: 3}
+  clip: {fileID: 8300000, guid: d15706f0cee7dca4dae87009d9e6b8a7, type: 3}
 --- !u!65 &4117487106099386246
 BoxCollider:
   m_ObjectHideFlags: 0
