@@ -10,16 +10,16 @@ public class GameManager : MonoBehaviour
 {
 
     private StacksController _stacksController;
-    private CinemachineVirtualCamera _virtualCamera;
+    private CameraController _cameraController;
     private UIController _uiController;
     private CharacterController _characterController;
     
     [Inject]
-    private void Construct(StacksController stacksController,CinemachineVirtualCamera virtualCamera
+    private void Construct(StacksController stacksController,CameraController cameraController
         ,UIController uiController,CharacterController characterController)
     {
         _stacksController = stacksController;
-        _virtualCamera = virtualCamera;
+        _cameraController = cameraController;
         _uiController = uiController;
         _characterController = characterController;
     }
@@ -27,16 +27,18 @@ public class GameManager : MonoBehaviour
     private void OnEnable()
     {
         _stacksController.OnLoseGame += LoseGame;
+        _stacksController.OnWinGame += WinGame;
     }
 
     private void OnDisable()
     {
         _stacksController.OnLoseGame -= LoseGame;
+        _stacksController.OnWinGame -= WinGame;
     }
 
     private void WinGame()
     {
-      
+        _cameraController.Win();
         _uiController.WinActivated();
     }
 
@@ -44,8 +46,8 @@ public class GameManager : MonoBehaviour
     {
         _characterController.Fall();
         _uiController.LoseActivated();
-        _virtualCamera.Follow = null;
-        _virtualCamera.LookAt = null;
+        _cameraController.Lose();
+       
     }
     
     

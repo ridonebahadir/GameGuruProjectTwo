@@ -1,30 +1,38 @@
 using System;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 using Random = UnityEngine.Random;
 
 public class StacksController : MonoBehaviour
 {
-    [SerializeField] private Stack stack;
+    [SerializeField] private Stack stackPrefab;
     [SerializeField] private Stack firstStack;
     [SerializeField] private Material[] materials;
-
-    public Action OnLoseGame;
+    [SerializeField] private GameObject finishObj;
+    [SerializeField] private int totalStackCount;
+    
+    private bool _isGameFinished;
+    private int _stackCount;
+    private bool _finishSpawned;
     private CharacterController _characterController;
     private CinemachineVirtualCamera _cineMachineVirtualCamera;
     private Stack _currentStack;
     private Stack _lastStack;
     private float _stackZ;
-    private readonly float _stackLength = 2.63f;
+    private readonly float _stackLength = 2.66f;
+
+
+    public Action OnLoseGame;
+    public Action OnWinGame;
 
     [Inject]
     private void Construct(CharacterController characterController)
     {
         _characterController = characterController;
-      
     }
-    
+
 
     private void Start()
     {
@@ -37,6 +45,11 @@ public class StacksController : MonoBehaviour
 
         _stackZ = _lastStack.transform.position.z;
         SpawnStack();
+        
+        var finishZ = _stackZ + (_stackLength * totalStackCount);
+        var finishPos = new Vector3(0f, 0f, finishZ); 
+        
+        finishObj.transform.position = finishPos;
     }
 
     private void Update()
@@ -57,7 +70,7 @@ public class StacksController : MonoBehaviour
         var startX = dir == 1 ? -5f : 5f;
         var spawnPos = new Vector3(startX, 0f, _stackZ);
 
-        var obj = Instantiate(stack, spawnPos, Quaternion.identity, transform);
+        var obj = Instantiate(stackPrefab, spawnPos, Quaternion.identity, transform);
         _currentStack = obj;
         _currentStack.Initialize(direction, materials[Random.Range(0, materials.Length)]);
 
@@ -71,6 +84,8 @@ public class StacksController : MonoBehaviour
 
     private void PlaceBlock()
     {
+        if (_isGameFinished) return;
+
         _currentStack.IsMoving = false;
 
         if (_lastStack != null)
@@ -90,6 +105,33 @@ public class StacksController : MonoBehaviour
         ));
 
         _lastStack = _currentStack;
+        _stackCount++;
+
+        if (_stackCount == totalStackCount && !_finishSpawned)
+        {
+            SpawnFinish();
+            return;
+        }
+
         SpawnStack();
+    }
+
+
+    private void SpawnFinish()
+    {
+        
+        OnWinGame?.Invoke();
+        
+        _finishSpawned = true;
+        _isGameFinished = true;
+        
+        
+        var targetJump = new Vector3(
+            finishObj.transform.position.x,
+            _characterController.transform.position.y,
+            finishObj.transform.position.z
+        );
+
+        _characterController.JumpTo(targetJump);
     }
 }

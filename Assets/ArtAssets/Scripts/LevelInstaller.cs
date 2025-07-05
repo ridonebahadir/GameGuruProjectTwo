@@ -7,9 +7,9 @@ public class LevelInstaller : MonoInstaller
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private CharacterController characterController;
-    [SerializeField] private CinemachineVirtualCamera cineMachineVirtualCamera;
     [SerializeField] private StacksController stacksController;
     [SerializeField] private UIController uiController;
+    [SerializeField] private CameraController cameraController;
     
 
 
@@ -17,7 +17,7 @@ public class LevelInstaller : MonoInstaller
     {
         Container.Bind<GameManager>().FromInstance(gameManager).AsSingle();
         Container.Bind<CharacterController>().FromInstance(characterController).AsSingle();
-        Container.Bind<CinemachineVirtualCamera>().FromInstance(cineMachineVirtualCamera).AsSingle();
+        Container.Bind<CameraController>().FromInstance(cameraController).AsSingle();
         Container.Bind<StacksController>().FromInstance(stacksController).AsSingle();
         Container.Bind<UIController>().FromInstance(uiController).AsSingle();
     }

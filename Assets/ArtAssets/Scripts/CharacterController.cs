@@ -3,6 +3,9 @@ using DG.Tweening;
 
 public class CharacterController : MonoBehaviour
 {
+
+    [SerializeField] private Animator anim;
+    
     private readonly float _moveDuration = 0.5f;
 
     public bool IsMoving { get; private set; } = false;
@@ -31,5 +34,18 @@ public class CharacterController : MonoBehaviour
             gameObject.SetActive(false);
         });
         
+    }
+    
+    
+    public void JumpTo(Vector3 targetPosition)
+    {
+        IsMoving = true;
+        transform.DOJump(targetPosition, 2f, 1, 0.6f)
+            .SetEase(Ease.OutQuad)
+            .OnComplete(() =>
+            {
+                IsMoving = false;
+                Debug.Log("🏁 Finish'e varıldı!");
+            });
     }
 }
