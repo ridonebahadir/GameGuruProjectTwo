@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
 
     private void WinGame()
     {
+        _characterController.WinState();
         _cameraController.Win();
         _uiController.WinActivated();
     }

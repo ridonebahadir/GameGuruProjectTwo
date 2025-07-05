@@ -3,13 +3,15 @@ using DG.Tweening;
 
 public class CharacterController : MonoBehaviour
 {
+    private static readonly int Win = Animator.StringToHash("Win");
 
     [SerializeField] private Animator anim;
     
     private readonly float _moveDuration = 0.5f;
 
     public bool IsMoving { get; private set; } = false;
-
+    
+    
     public void MoveTo(Vector3 targetPosition)
     {
         if (IsMoving) return;
@@ -45,7 +47,11 @@ public class CharacterController : MonoBehaviour
             .OnComplete(() =>
             {
                 IsMoving = false;
-                Debug.Log("🏁 Finish'e varıldı!");
             });
+    }
+    
+    public void WinState()
+    {
+        anim.SetBool(Win, true);
     }
 }

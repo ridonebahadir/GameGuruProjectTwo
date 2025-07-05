@@ -3628,6 +3628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad9a6a85e8924c84785c56f03d735d50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  anim: {fileID: 5062883109654775314}
 --- !u!136 &604125045
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -13834,6 +13835,11 @@ Transform:
 --- !u!4 &5062883109654775313 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5646447060418037118, guid: 8ebf841af362818409cf000d8f1a2345, type: 3}
+  m_PrefabInstance: {fileID: 585130342517064559}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5062883109654775314 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1782327572533206788, guid: 8ebf841af362818409cf000d8f1a2345, type: 3}
   m_PrefabInstance: {fileID: 585130342517064559}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5199958195870355088
