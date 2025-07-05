@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
     private void WinGame()
     {
         _characterController.WinState();
-        _cameraController.Win();
         _uiController.WinActivated();
     }
 
@@ -48,7 +47,13 @@ public class GameManager : MonoBehaviour
         _characterController.Fall();
         _uiController.LoseActivated();
         _cameraController.Lose();
-       
+    }
+    
+    public void NextLevel()
+    {
+        _characterController.NexLevelState();
+        _cameraController.NextLevel();
+        _stacksController.NextLevel();
     }
     
     
@@ -56,4 +61,6 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+  
 }

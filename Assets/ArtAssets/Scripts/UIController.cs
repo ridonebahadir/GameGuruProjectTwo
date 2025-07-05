@@ -9,6 +9,7 @@ using Zenject;
 public class UIController : MonoBehaviour
 {
     [SerializeField] private Button sceneRestartBtn;
+    [SerializeField] private Button nextLevelBtn;
     [SerializeField] private CanvasGroup win;
     [SerializeField] private CanvasGroup lose;
 
@@ -24,6 +25,8 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         sceneRestartBtn.onClick.AddListener(SceneRestart);
+        nextLevelBtn.onClick.AddListener(NextLevel);
+        
         DeActiveGroup(win);
         DeActiveGroup(lose);
     }
@@ -31,6 +34,12 @@ public class UIController : MonoBehaviour
     private void SceneRestart()
     {
         _gameManager.SceneRestart();
+    }
+
+    private void NextLevel()
+    {
+        _gameManager.NextLevel();
+        DeActiveGroup(win);
     }
 
     public void WinActivated()
@@ -42,6 +51,7 @@ public class UIController : MonoBehaviour
     {
         ActiveGroup(lose);
     }
+    
 
     private void ActiveGroup(CanvasGroup canvasGroup)
     {

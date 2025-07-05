@@ -14,8 +14,8 @@ public class StacksController : MonoBehaviour
     [SerializeField] private int totalStackCount;
     
     private bool _isGameFinished;
+    private bool _isFinishPanel;
     private int _stackCount;
-    private bool _finishSpawned;
     private CharacterController _characterController;
     private CinemachineVirtualCamera _cineMachineVirtualCamera;
     private Stack _currentStack;
@@ -47,13 +47,14 @@ public class StacksController : MonoBehaviour
         SpawnStack();
         
         var finishZ = _stackZ + (_stackLength * totalStackCount);
-        var finishPos = new Vector3(0f, 0f, finishZ); 
+        var finishPos = new Vector3(0f, 0.5f, finishZ); 
         
         finishObj.transform.position = finishPos;
     }
 
     private void Update()
     {
+        if (_isFinishPanel) return;
         if (!_characterController.IsMoving && Input.GetMouseButtonDown(0))
         {
             PlaceBlock();
@@ -84,7 +85,12 @@ public class StacksController : MonoBehaviour
 
     private void PlaceBlock()
     {
-        if (_isGameFinished) return;
+        if (_isGameFinished)
+        {
+            _isFinishPanel = true;
+            JumpCharacter();
+            return;
+        }
 
         _currentStack.IsMoving = false;
 
@@ -93,7 +99,7 @@ public class StacksController : MonoBehaviour
             var alive = _currentStack.Cut(_lastStack);
             if (!alive)
             {
-                OnLoseGame?.Invoke();
+                LoseGame();
                 return;
             }
         }
@@ -107,24 +113,29 @@ public class StacksController : MonoBehaviour
         _lastStack = _currentStack;
         _stackCount++;
 
-        if (_stackCount == totalStackCount && !_finishSpawned)
+        if (_stackCount == totalStackCount)
         {
-            SpawnFinish();
+            WinGame();
             return;
         }
 
         SpawnStack();
     }
 
-
-    private void SpawnFinish()
+    private void LoseGame()
     {
-        
-        OnWinGame?.Invoke();
-        
-        _finishSpawned = true;
+        OnLoseGame?.Invoke();
+    }
+
+    private void WinGame()
+    {
         _isGameFinished = true;
-        
+    }
+
+
+    private void JumpCharacter()
+    {
+        OnWinGame?.Invoke();
         
         var targetJump = new Vector3(
             finishObj.transform.position.x,
@@ -134,4 +145,19 @@ public class StacksController : MonoBehaviour
 
         _characterController.JumpTo(targetJump);
     }
+    
+    public void NextLevel()
+    {
+        _stackCount = 0;
+        _isGameFinished = false;
+        _isFinishPanel = false;
+        _stackZ = _characterController.transform.position.z;
+        _lastStack = null;
+        var finishZ = _stackZ + (_stackLength * totalStackCount);
+        var finishPos = new Vector3(0f, 0.5f, finishZ);
+        finishObj.transform.position = finishPos;
+        finishObj.SetActive(true);
+        SpawnStack();
+    }
+
 }

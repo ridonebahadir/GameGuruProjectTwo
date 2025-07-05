@@ -1,16 +1,21 @@
 using UnityEngine;
 using DG.Tweening;
+using Zenject;
 
 public class CharacterController : MonoBehaviour
 {
-    private static readonly int Win = Animator.StringToHash("Win");
-
     [SerializeField] private Animator anim;
-    
+    private static readonly int Win = Animator.StringToHash("Win");
     private readonly float _moveDuration = 0.5f;
-
+    private CameraController _cameraController;
     public bool IsMoving { get; private set; } = false;
     
+
+    [Inject]
+    private void Construct(CameraController cameraController)
+    {
+        _cameraController = cameraController;
+    }
     
     public void MoveTo(Vector3 targetPosition)
     {
@@ -41,11 +46,13 @@ public class CharacterController : MonoBehaviour
     
     public void JumpTo(Vector3 targetPosition)
     {
+     
         IsMoving = true;
         transform.DOJump(targetPosition, 2f, 1, 0.6f)
             .SetEase(Ease.OutQuad)
             .OnComplete(() =>
             {
+                _cameraController.Win();
                 IsMoving = false;
             });
     }
@@ -53,5 +60,10 @@ public class CharacterController : MonoBehaviour
     public void WinState()
     {
         anim.SetBool(Win, true);
+    }
+
+    public void NexLevelState()
+    {
+        anim.SetBool(Win, false);
     }
 }
