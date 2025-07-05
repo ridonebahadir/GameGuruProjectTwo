@@ -6048,8 +6048,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0304769e0c8dd25459a3cf2f6b542a59, type: 2}
   - {fileID: 2100000, guid: d0ca2cd4145ff9c4282021e14702f4af, type: 2}
   - {fileID: 2100000, guid: 5b25cd95e3901d24f89b00fa0a88cf4c, type: 2}
-  finishObj: {fileID: 1404522142}
-  totalStackCount: 3
+  finishPrefab: {fileID: 8822058165888743613, guid: 50d59dd24e8b8264b890d8c1d9709931, type: 3}
+  totalStackCount: 1
 --- !u!1 &1025820932
 GameObject:
   m_ObjectHideFlags: 0
@@ -8387,11 +8387,6 @@ Transform:
   m_Father: {fileID: 1050108527}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 68.972, y: -434.06, z: -307.974}
---- !u!1 &1404522142 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8822058165888743613, guid: 50d59dd24e8b8264b890d8c1d9709931, type: 3}
-  m_PrefabInstance: {fileID: 8552149843143756924}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1404522145 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8153186057199919623, guid: 50d59dd24e8b8264b890d8c1d9709931, type: 3}
@@ -14569,7 +14564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8822058165888743613, guid: 50d59dd24e8b8264b890d8c1d9709931, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50d59dd24e8b8264b890d8c1d9709931, type: 3}
