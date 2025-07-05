@@ -51,7 +51,7 @@ public class Stack : MonoBehaviour
 
         var overlap = previousStack.transform.localScale.x - Mathf.Abs(deltaX);
 
-        var tolerance = 0.3f;
+        var tolerance = 0.2f;
         if (Mathf.Abs(deltaX) <= tolerance)
         {
             transform.position = new Vector3(previousStack.transform.position.x, transform.position.y,
@@ -69,7 +69,7 @@ public class Stack : MonoBehaviour
         
         _gameManager.PlaySound(clip);
         
-        float centerX = (transform.position.x + previousStack.transform.position.x) / 2f;
+        var centerX = (transform.position.x + previousStack.transform.position.x) / 2f;
         transform.position = new Vector3(centerX, transform.position.y, transform.position.z);
         transform.localScale = new Vector3(overlap, 1f, previousStack.transform.localScale.z);
 

@@ -8,11 +8,12 @@ using Random = UnityEngine.Random;
 public class StacksController : MonoBehaviour
 {
     [SerializeField] private Stack stackPrefab;
-    [SerializeField] private Stack firstStack;
-    [SerializeField] private Material[] materials;
+    [SerializeField] private Coin coinPrefab;
     [SerializeField] private GameObject finishPrefab;
     [SerializeField] private int totalStackCount;
-
+    [SerializeField] private Stack firstStack;
+    [SerializeField] private Material[] materials;
+    
     private bool _isGameFinished;
     private bool _isFinishPanel;
     private int _stackCount;
@@ -28,12 +29,14 @@ public class StacksController : MonoBehaviour
     public Action OnWinGame;
 
     private DiContainer _diContainer;
+    private PoolManager _poolManager;
 
     [Inject]
-    private void Construct(CharacterController characterController,DiContainer diContainer)
+    private void Construct(CharacterController characterController,DiContainer diContainer,PoolManager poolManager)
     {
         _characterController = characterController;
         _diContainer = diContainer;
+        _poolManager = poolManager;
     }
 
     private void Start()
@@ -51,8 +54,9 @@ public class StacksController : MonoBehaviour
         var finishZ = _stackZ + (_stackLength * totalStackCount);
         var finishPos = new Vector3(0f, 0.5f, finishZ);
         _finishInstance = Instantiate(finishPrefab, finishPos, Quaternion.identity);
-    }
 
+        SpawnCoin(0,finishPos.z);
+    }
 
     private void Update()
     {
@@ -70,7 +74,7 @@ public class StacksController : MonoBehaviour
         var dir = Random.value > 0.5f ? 1 : -1;
         var direction = dir == 1 ? Vector3.right : Vector3.left;
 
-        var startX = dir == 1 ? -5f : 5f;
+        var startX = dir == 1 ? -3f : 3f;
         var spawnPos = new Vector3(startX, 0f, _stackZ);
 
         var obj = Instantiate(stackPrefab, spawnPos, Quaternion.identity, transform);
@@ -124,6 +128,23 @@ public class StacksController : MonoBehaviour
 
         SpawnStack();
     }
+    
+    private void SpawnCoin(float startZ, float endZ)
+    {
+        var coinCount = 3;
+
+        for (var i = 0; i < coinCount; i++)
+        {
+            var t = (float)(i + 1) / (coinCount + 1); 
+            var zPos = Mathf.Lerp(startZ, endZ, t);
+            var xPos = Random.Range(-2f, 2f);
+
+            var spawnPos = new Vector3(xPos, 0.5f, zPos);
+            var coin = Instantiate(coinPrefab, spawnPos, Quaternion.identity,transform);
+            _diContainer.Inject(coin);
+        }
+    }
+
 
     private void LoseGame()
     {
@@ -168,8 +189,8 @@ public class StacksController : MonoBehaviour
       
         _stackZ = newStackZ + (_stackLength * totalStackCount);
         var newFinishPos = new Vector3(0f, 0.5f, _stackZ+ _stackLength);
+        SpawnCoin(_finishInstance.transform.position.z,newFinishPos.z);
         _finishInstance = Instantiate(finishPrefab, newFinishPos, Quaternion.identity);
-
       
         var charStartPos = new Vector3(
             firstStack.transform.position.x,

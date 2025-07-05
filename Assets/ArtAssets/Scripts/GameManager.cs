@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     private CameraController _cameraController;
     private UIController _uiController;
     private CharacterController _characterController;
+    private int _score;
     
     [Inject]
     private void Construct(StacksController stacksController,CameraController cameraController
@@ -41,6 +42,11 @@ public class GameManager : MonoBehaviour
         _stacksController.OnWinGame -= WinGame;
     }
 
+    private void Start()
+    {
+        _uiController.UpdateScore(_score);
+    }
+
     private void WinGame()
     {
         PlaySound(win);
@@ -50,7 +56,6 @@ public class GameManager : MonoBehaviour
 
     private void LoseGame()
     {
-        PlaySound(lose);
         _characterController.Fall();
         _uiController.LoseActivated();
         _cameraController.Lose();
@@ -81,6 +86,12 @@ public class GameManager : MonoBehaviour
         }
 
         audioSource.PlayOneShot(clip);
+    }
+
+    public void ScoreIncrease(int amount)
+    {
+        _score += amount;
+        _uiController.UpdateScore(_score);
     }
     
     public void SceneRestart()

@@ -5,12 +5,18 @@ using UnityEngine.Serialization;
 public class PoolManager : MonoBehaviour
 {
     [SerializeField] private PoolData perfectParticle;
+    [SerializeField] private PoolData coin;
+    [SerializeField] private PoolData coinParticle;
+    
+    
     public PoolData PerfectParticle => perfectParticle;
+    public PoolData CoinParticle=> coinParticle;
 
 
     private void Awake()
     {
         Create(PerfectParticle, "Perfect Particle");
+        Create(CoinParticle, "Coin");
     }
 
     private void Create(PoolData data, string poolParentName)

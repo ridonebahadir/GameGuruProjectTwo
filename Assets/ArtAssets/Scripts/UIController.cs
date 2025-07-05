@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -12,7 +13,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button nextLevelBtn;
     [SerializeField] private CanvasGroup win;
     [SerializeField] private CanvasGroup lose;
-
+    [SerializeField] private TextMeshProUGUI scoreText;
+    
     private GameManager _gameManager;
 
 
@@ -65,5 +67,10 @@ public class UIController : MonoBehaviour
         canvasGroup.alpha = 0;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+    }
+
+    public void UpdateScore(int score)
+    {
+        scoreText.SetText("Score : " +score.ToString());
     }
 }
