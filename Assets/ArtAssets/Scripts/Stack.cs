@@ -1,47 +1,50 @@
+using System;
 using UnityEngine;
 
 public class Stack : MonoBehaviour
 {
-    public float moveSpeed = 2f;
-    public Vector3 moveDirection = Vector3.right;
-    
-    public MeshRenderer meshRenderer;
+    private readonly float moveSpeed = 2f;
+    private Vector3 _moveDirection = Vector3.right;
+    private MeshRenderer _meshRenderer;
     public bool IsMoving { get; set; }
 
     public void Initialize(Vector3 direction)
     {
-        moveDirection = direction;
+        _moveDirection = direction;
         IsMoving = true;
+    }
+
+    private void Start()
+    {
+        _meshRenderer = GetComponent<MeshRenderer>();
     }
 
     private void Update()
     {
-        if (IsMoving) transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        if (IsMoving) transform.position += _moveDirection * moveSpeed * Time.deltaTime;
     }
 
 
     public bool Cut(Stack previousStack)
     {
-        // Renderer ile görsel çakışma kontrolü
-        var prevRenderer = previousStack.GetComponent<Renderer>();
-
-        if (!meshRenderer.bounds.Intersects(prevRenderer.bounds))
+        if (!_meshRenderer.bounds.Intersects(previousStack.GetMeshRenderer().bounds))
         {
-            return false; // Hiç çakışma yoksa GAME OVER
+            return false;
         }
-
-        // Çakışma varsa kesme işlemi yap
+        
         var deltaX = transform.position.x - previousStack.transform.position.x;
         var direction = deltaX > 0 ? 1f : -1f;
 
         var overlap = previousStack.transform.localScale.x - Mathf.Abs(deltaX);
-
-        // Tam hizalanmışsa, kusursuz yerleşim
-        var tolerance = 0.05f;
+        
+        var tolerance = 0.1f;
         if (Mathf.Abs(deltaX) <= tolerance)
         {
             transform.position = new Vector3(previousStack.transform.position.x, transform.position.y, transform.position.z);
             transform.localScale = new Vector3(previousStack.transform.localScale.x, 1f, previousStack.transform.localScale.z);
+
+            Debug.Log("PERFECT!");
+
             return true;
         }
 
@@ -49,8 +52,7 @@ public class Stack : MonoBehaviour
         {
             return false;
         }
-
-// Yeni pozisyon ve scale — tam ortalanmış şekilde
+        
         float centerX = (transform.position.x + previousStack.transform.position.x) / 2f;
         transform.position = new Vector3(centerX, transform.position.y, transform.position.z);
         transform.localScale = new Vector3(overlap, 1f, previousStack.transform.localScale.z);
@@ -64,11 +66,6 @@ public class Stack : MonoBehaviour
         return true;
     }
 
-
-
-
-
-
     private void SpawnFallingPart(Vector3 pos, Vector3 scale)
     {
         var part = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -77,4 +74,6 @@ public class Stack : MonoBehaviour
         part.AddComponent<Rigidbody>();
         Destroy(part, 3f);
     }
+
+    private MeshRenderer GetMeshRenderer() => _meshRenderer;
 }

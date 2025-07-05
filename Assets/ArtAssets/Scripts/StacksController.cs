@@ -1,25 +1,38 @@
 using UnityEngine;
+using Zenject;
 
 public class StacksController : MonoBehaviour
 {
-    public Stack stack;
-    public Transform cameraTransform;
-    public CharacterController character;
-
+    [SerializeField] private Stack stack;
+    [SerializeField] private Stack firstStack;
+    
+    private CharacterController _characterController;
     private Stack _currentStack;
     private Stack _lastStack;
+    private float _stackZ;
+    private readonly float _stackLength = 2.63f;
 
-    private float stackZ = 0f;
-    private float stackLenght = 2.63f;
+    [Inject]
+    private void Construct(CharacterController characterController)
+    {
+        _characterController = characterController;
+    }
 
     private void Start()
     {
+        _lastStack = firstStack;
+        _lastStack.IsMoving = false;
+        
+        var startPos = new Vector3(_lastStack.transform.position.x, _characterController.transform.position.y, _lastStack.transform.position.z);
+        _characterController.MoveTo(startPos);
+        
+        _stackZ = _lastStack.transform.position.z;
         SpawnStack();
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!_characterController.IsMoving && Input.GetMouseButtonDown(0))
         {
             PlaceBlock();
         }
@@ -27,17 +40,25 @@ public class StacksController : MonoBehaviour
 
     private void SpawnStack()
     {
-        stackZ += stackLenght;
-        var spawnPos = new Vector3(-2f, 0f, stackZ);
-        var obj = Instantiate(stack, spawnPos, Quaternion.identity);
+        _stackZ += _stackLength;
+        
+        var dir = Random.value > 0.5f ? 1 : -1;
+        var direction = dir == 1 ? Vector3.right : Vector3.left;
+        
+        var startX = dir == 1 ? -5f : 5f;
+        var spawnPos = new Vector3(startX, 0f, _stackZ);
+
+        var obj = Instantiate(stack, spawnPos, Quaternion.identity,transform);
         _currentStack = obj;
-        _currentStack.Initialize(Vector3.right);
-
-        if (_lastStack == null) return;
-
-        var lastScale = _lastStack.transform.localScale;
-        obj.transform.localScale = new Vector3(lastScale.x, 1f, lastScale.z);
+        _currentStack.Initialize(direction);
+        
+        if (_lastStack != null)
+        {
+            var lastScale = _lastStack.transform.localScale;
+            obj.transform.localScale = new Vector3(lastScale.x, 1f, lastScale.z);
+        }
     }
+
 
     private void PlaceBlock()
     {
@@ -45,16 +66,20 @@ public class StacksController : MonoBehaviour
 
         if (_lastStack != null)
         {
-            bool alive = _currentStack.Cut(_lastStack);
+            var alive = _currentStack.Cut(_lastStack);
             if (!alive)
             {
                 Debug.Log("GAME OVER");
-                character.Fall();
+                _characterController.Fall();
                 return;
             }
         }
-        
-        character.MoveTo(new Vector3(_currentStack.transform.position.x, character.transform.position.y, _currentStack.transform.position.z));
+
+        _characterController.MoveTo(new Vector3(
+            _currentStack.transform.position.x,
+            _characterController.transform.position.y,
+            _currentStack.transform.position.z
+        ));
 
         _lastStack = _currentStack;
         SpawnStack();

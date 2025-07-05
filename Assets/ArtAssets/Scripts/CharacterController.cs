@@ -1,54 +1,30 @@
 using UnityEngine;
+using DG.Tweening;
 
-public class CharacterController: MonoBehaviour
+public class CharacterController : MonoBehaviour
 {
-    public float moveSpeed = 3f;
-    public float stoppingDistance = 0.05f;
+    private readonly float _moveDuration = 0.5f;
 
-    private Vector3 _targetPosition;
-    private bool _isMoving;
-    private bool _isFalling;
+    public bool IsMoving { get; private set; } = false;
 
-    private Rigidbody _rigidbody;
-
-    private void Start()
+    public void MoveTo(Vector3 targetPosition)
     {
-        _targetPosition = transform.position;
-    }
+        if (IsMoving) return;
 
-    private void Update()
-    {
-        if (_isMoving && !_isFalling)
-        {
-            MoveToTarget();
-        }
-    }
+        IsMoving = true;
 
-    public void MoveTo(Vector3 position)
-    {
-        _targetPosition = position;
-        _isMoving = true;
-    }
+        var finalPos = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
 
-    private void MoveToTarget()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, _targetPosition, moveSpeed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, _targetPosition) <= stoppingDistance)
-        {
-            _isMoving = false;
-        }
+        transform.DOMove(finalPos, _moveDuration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() =>
+            {
+                IsMoving = false;
+            });
     }
 
     public void Fall()
     {
-        if (_isFalling) return;
-
-        _isFalling = true;
-        _isMoving = false;
-
-        _rigidbody = GetComponent<Rigidbody>();
-        if (_rigidbody == null)
-            _rigidbody = gameObject.AddComponent<Rigidbody>();
+        transform.DOMoveY(transform.position.y - 5f, 1f).SetEase(Ease.InQuad);
     }
 }
